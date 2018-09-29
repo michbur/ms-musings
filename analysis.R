@@ -21,6 +21,13 @@ mdat <- mutate(dat,
   inner_join(seq, by = c("pos" = "pos"))
 
 
+plot(density(filter(mdat, type == "change")[["value"]]))
+
+filter(mdat, type == "change") %>% 
+  mutate(value_disc = cut(value, breaks = c(min(value), -50, -25, 0, 25, 50, max(value)), include.lowest = TRUE)) %>% 
+  group_by(value_disc, aa) %>% 
+  summarise(count = length(aa))
+
 p1 <- ggplot(filter(mdat, type != "change", pos %in% 1L:200), aes(x = pos, y = value, group = type, color = type)) +
   geom_line() +
   scale_y_continuous("Exchange rate [1/s]") +
